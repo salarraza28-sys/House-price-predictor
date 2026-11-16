@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vihara Tech | House Price Prediction System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-gradient: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #06b6d4 100%);
+            --accent-cyan: #06b6d4;
+            --bg-gradient: radial-gradient(circle at 10% 15%, rgba(37, 99, 235, 0.12), transparent 30%),
+                           radial-gradient(circle at 90% 85%, rgba(6, 182, 212, 0.15), transparent 35%),
+                           linear-gradient(145deg, #f0f4f9 0%, #ffffff 50%, #eaf2fb 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-border: rgba(37, 99, 235, 0.12);
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --input-bg: #f8fafc;
+            --input-border: #e2e8f0;
+            --input-focus-border: #2563eb;
+            --shadow-card: 0 25px 60px -15px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(37, 99, 235, 0.08);
+            --shadow-btn: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-dark);
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(80px);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(37, 99, 235, 0.18);
+            top: -150px;
+            left: -100px;
+        }
+
+        .glow-2 {
+            width: 500px;
+            height: 500px;
+            background: rgba(6, 182, 212, 0.16);
+            bottom: -150px;
+            right: -100px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 980px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 45px 50px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--primary-gradient);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .brand h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .brand h1 span {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            text-align: center;
+            font-size: 14.5px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tagline span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .model-badge {
+            width: fit-content;
+            margin: 0 auto 28px;
+            padding: 7px 18px;
+            border-radius: 9999px;
+            background: rgba(37, 99, 235, 0.08);
+            color: #1d4ed8;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .model-badge .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #06b6d4;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #06b6d4;
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(6, 182, 212, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+
+        .presets-bar {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .presets-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preset-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preset-btn:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+            background: #eff6ff;
+            transform: translateY(-1px);
+        }
+
+        .form-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 24px 0 14px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .section-header:first-of-type {
+            margin-top: 0;
+        }
+
+        .section-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .section-header .icon {
+            font-size: 18px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #64748b;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 13px 14px 13px 44px;
+            border: 1.5px solid var(--input-border);
+            border-radius: 12px;
+            background: var(--input-bg);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.25s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+        }
+
+        input:focus,
+        select:focus {
+            background-color: #ffffff;
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .input-hint {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .predict-btn {
+            width: 100%;
+            margin-top: 26px;
+            padding: 16px 28px;
+            border: none;
+            border-radius: 14px;
+            background: var(--primary-gradient);
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: var(--shadow-btn);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px -5px rgba(37, 99, 235, 0.5);
+            filter: brightness(1.05);
+        }
+
+        .predict-btn:active {
+            transform: translateY(0);
+        }
+
+        .prediction-result-card {
+            margin-top: 32px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            animation: resultFadeIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prediction-result-card::before {
+            content: "";
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.3), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .result-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .result-badge {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(6, 182, 212, 0.15);
+            color: #38bdf8;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .result-price {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 46px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #ffffff;
+            margin: 6px 0 18px 0;
+            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-breakdown {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .breakdown-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .breakdown-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .breakdown-val {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .prediction-error {
+            margin-top: 28px;
+            padding: 18px 24px;
+            border-radius: 16px;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            animation: resultFadeIn 0.5s ease-out;
+        }
+
+        .project-info {
+            text-align: center;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .project-info h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .project-info h2 .cyan {
+            color: #06b6d4;
+        }
+
+        .project-info h2 .blue {
+            color: #2563eb;
+        }
+
+        .project-info p {
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .footer strong {
+            color: #1e293b;
+        }
+
+        @keyframes resultFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 860px) {
+            .container {
+                padding: 30px 22px;
+                border-radius: 20px;
+            }
+
+            .brand h1 {
+                font-size: 32px;
+            }
+
+            .form-card {
+                padding: 22px 16px;
+            }
+
+            .grid-4, .grid-3, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .result-breakdown {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .result-price {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <div class="container">
+        <div class="brand">
+            <h1>VIHARA <span>TECH</span></h1>
+        </div>
+
+        <div class="tagline">
+            <span>Machine Learning</span>
+            <span>•</span>
+            <span>Predictive Analytics</span>
+            <span>•</span>
+            <span>Real Estate Valuation</span>
+        </div>
+
+        <div class="model-badge">
+            <span class="pulse-dot"></span>
+            Property Price Prediction Engine
+        </div>
+
+        <div class="presets-bar">
+            <span class="presets-label">Quick Fill Demos:</span>
+            <button type="button" class="preset-btn" onclick="loadPreset('seattle_family')">
+                Seattle Family Home
+            </button>
+            <button type="button" class="preset-btn" onclick="loadPreset('bellevue_luxury')">
+                Bellevue Waterfront Estate
+            </button>
+            <button type="button" class="preset-btn" onclick="loadPreset('redmond_suburban')">
+                Redmond Modern Suburban
+            </button>
+            <button type="button" class="preset-btn" onclick="loadPreset('renton_starter')">
+                Renton Starter House
+            </button>
+            <a href="/analytics" class="preset-btn" style="margin-left: auto; background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; font-weight: 700; text-decoration: none;">
+                📊 Model Analytics & Plots
+            </a>
+        </div>
+
+        <div class="form-card">
+            <form action="/" method="post" id="predictionForm">
+                <div class="section-header">
+                    <span class="icon">🏡</span>
+                    <h3>1. Property Basics & Location</h3>
+                </div>
+
+                <div class="grid-4">
+                    <div class="input-group">
+                        <label for="city">City Location</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📍</span>
+                            <select id="city" name="city" required>
+                                {% for c in cities %}
+                                <option value="{{ c }}" {% if form_data.get('city') == c or (not form_data.get('city') and c == 'Seattle') %}selected{% endif %}>
+                                    {{ c }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bedrooms">Bedrooms</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🛏️</span>
+                            <input
+                                type="number"
+                                id="bedrooms"
+                                name="bedrooms"
+                                placeholder="e.g. 3"
+                                min="0"
+                                max="15"
+                                step="1"
+                                value="{{ form_data.get('bedrooms', '3') }}"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bathrooms">Bathrooms</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🛁</span>
+                            <input
+                                type="number"
+                                id="bathrooms"
+                                name="bathrooms"
+                                placeholder="e.g. 2.25"
+                                min="0"
+                                max="10"
+                                step="0.25"
+                                value="{{ form_data.get('bathrooms', '2.25') }}"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="floors">Floors / Stories</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏢</span>
+                            <input
+                                type="number"
+                                id="floors"
+                                name="floors"
+                                placeholder="e.g. 1.5"
+                                min="1"
+                                max="5"
+                                step="0.5"
+                                value="{{ form_data.get('floors', '1.5') }}"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <span class="icon">📐</span>
+                    <h3>2. Dimensions & Square Footage</h3>
+                </div>
+
+                <div class="grid-4">
+                    <div class="input-group">
+                        <label for="sqft_living">Living Area (Sq Ft)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🛋️</span>
+                            <input
+                                type="number"
+                                id="sqft_living"
+                                name="sqft_living"
+                                placeholder="e.g. 2100"
+                                min="200"
+                                max="20000"
+                                step="10"
+                                value="{{ form_data.get('sqft_living', '2100') }}"
+                                required
+                            >
+                        </div>
+                        <span class="input-hint">Interior finished living space</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sqft_lot">Lot Size (Sq Ft)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🌳</span>
+                            <input
+                                type="number"
+                                id="sqft_lot"
+                                name="sqft_lot"
+                                placeholder="e.g. 7500"
+                                min="300"
+                                max="500000"
+                                step="50"
+                                value="{{ form_data.get('sqft_lot', '7500') }}"
+                                required
+                            >
+                        </div>
+                        <span class="input-hint">Total land parcel footprint</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sqft_above">Above Ground (Sq Ft)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏠</span>
+                            <input
+                                type="number"
+                                id="sqft_above"
+                                name="sqft_above"
+                                placeholder="e.g. 1600"
+                                min="200"
+                                max="20000"
+                                step="10"
+                                value="{{ form_data.get('sqft_above', '1600') }}"
+                                required
+                            >
+                        </div>
+                        <span class="input-hint">Living area excluding basement</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sqft_basement">Basement (Sq Ft)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🧱</span>
+                            <input
+                                type="number"
+                                id="sqft_basement"
+                                name="sqft_basement"
+                                placeholder="e.g. 500 (0 if none)"
+                                min="0"
+                                max="10000"
+                                step="10"
+                                value="{{ form_data.get('sqft_basement', '500') }}"
+                                required
+                            >
+                        </div>
+                        <span class="input-hint">Enter 0 if no basement</span>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <span class="icon">⭐</span>
+                    <h3>3. Condition, Views & Premium Attributes</h3>
+                </div>
+
+                <div class="grid-3">
+                    <div class="input-group">
+                        <label for="waterfront">Waterfront Property</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🌊</span>
+                            <select id="waterfront" name="waterfront" required>
+                                <option value="0" {% if form_data.get('waterfront') == '0' %}selected{% endif %}>No (Standard Parcel)</option>
+                                <option value="1" {% if form_data.get('waterfront') == '1' %}selected{% endif %}>Yes (Direct Waterfront)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="view">View Quality Rating</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🌅</span>
+                            <select id="view" name="view" required>
+                                <option value="0" {% if form_data.get('view') == '0' %}selected{% endif %}>0 - No Special View</option>
+                                <option value="1" {% if form_data.get('view') == '1' %}selected{% endif %}>1 - Fair View</option>
+                                <option value="2" {% if form_data.get('view') == '2' %}selected{% endif %}>2 - Average View</option>
+                                <option value="3" {% if form_data.get('view') == '3' %}selected{% endif %}>3 - Good View</option>
+                                <option value="4" {% if form_data.get('view') == '4' %}selected{% endif %}>4 - Panoramic Luxury View</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="condition">Property Condition</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🛠️</span>
+                            <select id="condition" name="condition" required>
+                                <option value="1" {% if form_data.get('condition') == '1' %}selected{% endif %}>1 - Poor / Fixer-Upper</option>
+                                <option value="2" {% if form_data.get('condition') == '2' %}selected{% endif %}>2 - Fair Condition</option>
+                                <option value="3" {% if form_data.get('condition', '3') == '3' %}selected{% endif %}>3 - Good / Standard</option>
+                                <option value="4" {% if form_data.get('condition') == '4' %}selected{% endif %}>4 - Very Good Condition</option>
+                                <option value="5" {% if form_data.get('condition') == '5' %}selected{% endif %}>5 - Exceptional / Pristine</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <span class="icon">🏗️</span>
+                    <h3>4. Age, Renovation & Valuation Timeline</h3>
+                </div>
+
+                <div class="grid-3">
+                    <div class="input-group">
+                        <label for="yr_built">Year Built</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📅</span>
+                            <input
+                                type="number"
+                                id="yr_built"
+                                name="yr_built"
+                                placeholder="e.g. 1990"
+                                min="1900"
+                                max="2026"
+                                value="{{ form_data.get('yr_built', '1990') }}"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="yr_renovated">Year Renovated</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔨</span>
+                            <input
+                                type="number"
+                                id="yr_renovated"
+                                name="yr_renovated"
+                                placeholder="0 if never renovated"
+                                min="0"
+                                max="2026"
+                                value="{{ form_data.get('yr_renovated', '0') }}"
+                                required
+                            >
+                        </div>
+                        <span class="input-hint">Enter 0 if original condition</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="date">Valuation Date</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🗓️</span>
+                            <input
+                                type="date"
+                                id="date"
+                                name="date"
+                                value="{{ form_data.get('date', '2014-06-01') }}"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="predict-btn" id="submitBtn">
+                    <span>Predict Property Market Valuation</span>
+                </button>
+            </form>
+        </div>
+
+        {% if prediction_text %}
+        <div class="prediction-result-card">
+            <div class="result-top">
+                <span class="result-badge">Predicted Price</span>
+            </div>
+
+            <div class="result-price">
+                {{ prediction_text }}
+            </div>
+
+            <div class="result-breakdown">
+                <div class="breakdown-item">
+                    <div class="breakdown-label">Price / Sq Ft</div>
+                    <div class="breakdown-val">${{ breakdown.price_per_sqft or 'N/A' }}</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">Property Age</div>
+                    <div class="breakdown-val">{{ breakdown.house_age }} Years</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">Renovation Status</div>
+                    <div class="breakdown-val">{{ breakdown.reno_status }}</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-label">Total Effective Sq Ft</div>
+                    <div class="breakdown-val">{{ breakdown.total_sqft }} sq ft</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if error_text %}
+        <div class="prediction-error">
+            <span style="font-size: 20px;">⚠️</span>
+            <div>
+                <strong>Validation or Processing Error:</strong> {{ error_text }}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="project-info">
+            <h2>
+                Project By <span class="blue">A.M Salar Raza</span> & <span class="cyan">Vihara Tech</span>
+            </h2>
+            <p>
+                Real Estate Valuation System • Powered by Scikit-Learn, Matplotlib & Seaborn • <a href="/analytics" style="color: #2563eb; font-weight: 700; text-decoration: underline;">View Visual Diagnostics</a>
+            </p>
+        </div>
+
+        <div class="footer">
+            © 2026 <strong>Vihara Tech</strong>
+        </div>
+    </div>
+
+    <script>
+        const PRESETS = {
+            seattle_family: {
+                city: "Seattle",
+                bedrooms: 4,
+                bathrooms: 2.5,
+                floors: 2.0,
+                sqft_living: 2500,
+                sqft_lot: 6000,
+                sqft_above: 2000,
+                sqft_basement: 500,
+                waterfront: "0",
+                view: "1",
+                condition: "4",
+                yr_built: 1988,
+                yr_renovated: 2012,
+                date: "2014-06-15"
+            },
+            bellevue_luxury: {
+                city: "Bellevue",
+                bedrooms: 5,
+                bathrooms: 4.0,
+                floors: 2.0,
+                sqft_living: 4600,
+                sqft_lot: 15000,
+                sqft_above: 3600,
+                sqft_basement: 1000,
+                waterfront: "1",
+                view: "4",
+                condition: "5",
+                yr_built: 2005,
+                yr_renovated: 0,
+                date: "2014-07-20"
+            },
+            redmond_suburban: {
+                city: "Redmond",
+                bedrooms: 3,
+                bathrooms: 2.0,
+                floors: 1.0,
+                sqft_living: 1850,
+                sqft_lot: 8500,
+                sqft_above: 1850,
+                sqft_basement: 0,
+                waterfront: "0",
+                view: "0",
+                condition: "3",
+                yr_built: 1996,
+                yr_renovated: 0,
+                date: "2014-05-12"
+            },
+            renton_starter: {
+                city: "Renton",
+                bedrooms: 3,
+                bathrooms: 1.5,
+                floors: 1.0,
+                sqft_living: 1350,
+                sqft_lot: 5200,
+                sqft_above: 1350,
+                sqft_basement: 0,
+                waterfront: "0",
+                view: "0",
+                condition: "3",
+                yr_built: 1975,
+                yr_renovated: 0,
+                date: "2014-08-01"
+            }
+        };
+
+        function loadPreset(key) {
+            const data = PRESETS[key];
+            if (!data) return;
+            for (const [id, val] of Object.entries(data)) {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.value = val;
+                    el.style.backgroundColor = "#e0f2fe";
+                    setTimeout(() => {
+                        el.style.backgroundColor = "";
+                    }, 500);
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("predictionForm");
+            const btn = document.getElementById("submitBtn");
+            if (form && btn) {
+                form.addEventListener("submit", function () {
+                    btn.innerHTML = "<span>Predicting...</span>";
+                    btn.style.opacity = "0.85";
+                });
+            }
+        });
+    </script>
+</body>
+</html>
