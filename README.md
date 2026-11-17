@@ -13,7 +13,6 @@ MiniProject/
 │
 ├── data.csv                # King County housing sales dataset (4,600 rows)
 ├── source_code.py          # Scikit-Learn ML pipeline, evaluation & Seaborn/Matplotlib plotting
-├── MLR.py                  # Core regression pipeline module
 ├── model.pkl               # Serialized trained Scikit-Learn model & scaler
 ├── app.py                  # Flask web backend with real-time prediction and analytics routes
 ├── templates/
